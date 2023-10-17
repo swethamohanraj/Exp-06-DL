@@ -36,7 +36,7 @@ To develop an LSTM-based model for recognizing the named entities in the text.
 ## PROGRAM:
 
 ### Libraries:
-python
+```
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
@@ -44,10 +44,10 @@ from tensorflow.keras.preprocessing import sequence
 from sklearn.model_selection import train_test_split
 from keras import layers
 from keras.models import Model
-
+```
 
 ### Reading, Pre-processing Data:
-python
+```
 data = pd.read_csv("ner_dataset.csv", encoding="latin1")
 data.head(35)
 data = data.fillna(method="ffill")
@@ -65,9 +65,9 @@ num_words = len(words)
 num_tags = len(tags)
 num_words
 num_tags
-
+```
 ### Defining a Class to get sentence:
-python
+```
 class SentenceGetter(object):
     def __init__(self, data):
         self.n_sent = 1
@@ -104,9 +104,9 @@ X1[0]
 
 max_len = 50
 
-
+```
 ### Padding:
-python
+```
 X = sequence.pad_sequences(maxlen=max_len,
                   sequences=X1, padding="post",
                   value=num_words-1)
@@ -121,9 +121,9 @@ y = sequence.pad_sequences(maxlen=max_len,
 X_train, X_test, y_train, y_test = train_test_split(X, y,
                                                     test_size=0.2, random_state=1)
 
-
+```
 ### LSTM Model:
-python
+```
 input_word = layers.Input(shape=(max_len,))
 embedding_layer = layers.Embedding(input_dim = num_words,
                                    output_dim = 50,
@@ -147,18 +147,18 @@ history = model.fit(
     validation_data=(X_test,y_test),
     batch_size=45,
     epochs=3,)
-
+```
 ### Metrics:
-python
+```
 metrics = pd.DataFrame(model.history.history)
 metrics.head()
 
 metrics[['accuracy','val_accuracy']].plot()
 
 metrics[['loss','val_loss']].plot()
-
+```
 ### Prediction:
-python
+```
 i = 20
 p = model.predict(np.array([X_test[i]]))
 p = np.argmax(p, axis=-1)
@@ -167,7 +167,7 @@ print("{:15}{:5}\t {}\n".format("Word", "True", "Pred"))
 print("-" *30)
 for w, true, pred in zip(X_test[i], y_true, p[0]):
     print("{:15}{}\t{}".format(words[w-1], tags[true], tags[pred]))
-
+```
 
 ## OUTPUT:
 
